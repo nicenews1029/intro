@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>서버 구축 및 운영 환경</title>
+<style>
+  :root {
+    --bg: #f7f8fa; --surface: #ffffff; --surface-2: #eef1f5; --text: #16191d; --text-2: #565d66; --border: #dde2e8;
+    --primary: #c2410c; --primary-soft: #fdeee6; --accent: #2f5bd3; --accent-soft: #e7eefc; --ok: #18794e; --ok-soft: #e6f4ec;
+    --radius: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121417; --surface: #1a1d21; --surface-2: #23272d; --text: #e8eaed; --text-2: #a3aab3; --border: #323840;
+      --primary: #ff8a5c; --primary-soft: #3a2218; --accent: #8fb0ff; --accent-soft: #1c2742; --ok: #5fd39a; --ok-soft: #173426;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; word-break: keep-all; overflow-wrap: anywhere; background: var(--bg); color: var(--text); font: 16px/1.7 "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Hiragino Sans", "Yu Gothic", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  a { color: var(--accent); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  section { padding: 60px 0; border-top: 1px solid var(--border); }
+  h2 { font-size: 30px; margin: 0 0 8px; letter-spacing: -.02em; }
+  h3 { font-size: 20px; margin: 0 0 10px; letter-spacing: -.01em; }
+  .lead { color: var(--text-2); margin: 0 0 32px; max-width: 900px; font-size: 17px; }
+  code { background: var(--surface-2); padding: 1px 6px; border-radius: 5px; font-size: .88em; }
+
+  header.hero { padding: 64px 0 40px; }
+  .brand { font-size: 22px; font-weight: 900; letter-spacing: -.5px; }
+  .brand span { color: var(--primary); }
+  .hero h1 { font-size: clamp(30px, 4.6vw, 46px); line-height: 1.25; margin: 18px 0 16px; letter-spacing: -.03em; }
+  .hero h1 em { font-style: normal; color: var(--primary); }
+  .hero .intro { color: var(--text-2); font-size: 18px; max-width: 800px; margin: 0 0 24px; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+  .stat b { display: block; font-size: 26px; color: var(--primary); line-height: 1.25; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--text-2); font-size: 14px; }
+  .sources { margin: 14px 0 0; color: var(--text-2); font-size: 13px; }
+  .sources a { color: inherit; }
+
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(3, 1fr); }
+  .grid.two { grid-template-columns: repeat(2, 1fr); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+  .card h3 { font-size: 18px; margin: 8px 0 6px; }
+  .card p { color: var(--text-2); margin: 0; font-size: 15px; }
+  .card ul { color: var(--text-2); margin: 0; padding-left: 18px; font-size: 15px; }
+  .card li { margin: 4px 0; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); }
+  .tag.p { background: var(--primary-soft); color: var(--primary); }
+  .tag.green { background: var(--ok-soft); color: var(--ok); }
+
+  .arch { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; }
+  .arch svg { display: block; width: 100%; min-width: 720px; height: auto; }
+  .arch text { fill: var(--text); font: 13px "Malgun Gothic", "Hiragino Sans", "Yu Gothic", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  .arch .b { font-weight: 700; }
+  .arch .sub { fill: var(--text-2); font-size: 11px; }
+  .arch .box { fill: var(--surface-2); stroke: var(--border); }
+  .arch .core { fill: var(--primary-soft); stroke: var(--primary); }
+  .arch .ext { fill: var(--accent-soft); stroke: var(--accent); }
+  .arch .ci { fill: var(--ok-soft); stroke: var(--ok); }
+  .arch .zone { fill: none; stroke: var(--text-2); stroke-dasharray: 6 4; }
+  .arch .ln { stroke: var(--text-2); stroke-width: 1.4; fill: none; }
+  .arch .dash { stroke-dasharray: 5 4; }
+  .arch .red { stroke: var(--primary); }
+  .arch .grn { stroke: var(--ok); }
+  .arch .ahg { fill: var(--ok); }
+  .arch .ah { fill: var(--text-2); }
+  .arch .ahr { fill: var(--primary); }
+  .shot { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  .key { margin: -16px 0 0; color: var(--primary); font-size: 18px; font-weight: 700; max-width: 800px; }
+  .lead em { font-style: normal; font-weight: 700; color: var(--primary); }
+  .cap { font-size: 13px; color: var(--text-2); margin: 8px 0 0; }
+  .arch + .cap + h3 { margin-top: 36px; }
+
+
+  .back { padding: 14px 0 0; font-size: 14px; } .back .wrap { display: flex; justify-content: space-between; gap: 12px; } .back a { text-decoration: none; font-weight: 700; }
+  footer { padding: 40px 0 60px; border-top: 1px solid var(--border); color: var(--text-2); font-size: 14px; }
+
+  @media screen and (max-width: 860px) {
+    .grid, .grid.two { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    section { padding: 40px 0; }
+  }
+
+  @page { size: A4; margin: 11mm; }
+  @media print {
+    :root { --bg: #fff; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 12px; }
+    header.hero { padding: 0 0 12px; }
+    footer, .back { display: none; }
+    .hero h1 { font-size: 28px; margin: 10px 0; }
+    .hero .intro { font-size: 14px; }
+    section { padding: 10px 0; }
+    .cap, .card, .stat, .arch, .lead, .shot, .key { break-inside: avoid; }
+    h2 { font-size: 22px; } h3 { font-size: 15px; }
+    .lead { font-size: 13px; margin-bottom: 14px; }
+    .card { padding: 14px; } .card p, .card ul { font-size: 12px; }
+    .key { font-size: 14px; margin-top: -8px; }
+    h2, h3 { break-after: avoid; }
+    .arch { overflow: visible; padding: 8px; } .arch svg { min-width: 0; }
+    .arch + .cap + h3 { margin-top: 14px; }
+    .page-break { break-before: page; }
+  }
+
+  /* 언어 전환: 홈(app/globals.css)과 같은 드롭다운 */
+  .lang-switch { position: relative; color: var(--text-2); }
+  .lang-switch summary { padding: 0 6px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .lang-switch > div { position: absolute; top: calc(100% + 8px); right: 0; z-index: 10; display: grid; min-width: 96px; padding: 6px;
+    border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: 0 8px 24px rgb(0 0 0 / .12); }
+  .back .lang-switch a { padding: 4px 8px; color: var(--text-2); text-decoration: none; font-weight: 400; white-space: nowrap; }
+  .back .lang-switch a[aria-current] { color: var(--text); font-weight: 700; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  :lang(ja), :lang(zh) { word-break: normal; }
+  /* ja/zh: 맑은 고딕보다 해당 언어 글꼴을 먼저 (한자·가나 자형·굵기 섞임 방지) */
+  body:lang(ja), :lang(ja) .arch text { font-family: "Pretendard", "Hiragino Sans", "Yu Gothic", Meiryo, system-ui, sans-serif; }
+  body:lang(zh), :lang(zh) .arch text { font-family: "Pretendard", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  :lang(ja) code { font-family: "Cascadia Code", Consolas, "Yu Gothic", Meiryo, monospace; }
+  :lang(zh) code { font-family: "Cascadia Code", Consolas, "Microsoft YaHei", monospace; }
+</style>
+</head>
+<body>
+<nav class="back"><div class="wrap"><a href="../../">← 포트폴리오</a><details class="lang-switch"><summary><span class="sr-only">언어 선택: </span>한국어</summary><div><a hreflang="ko" lang="ko" href="./" aria-current="page">한국어</a><a hreflang="en" lang="en" href="en/">English</a><a hreflang="ja" lang="ja" href="ja/">日本語</a><a hreflang="zh" lang="zh-CN" href="zh/">中文</a></div></details></div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="brand">jenkins-<span>operations</span></div>
+    <h1>서버 구축 및<br><em>운영 환경</em></h1>
+    <p class="intro">실제 서비스 환경과 유사한 환경을 내부에 구축 및 테스트를 통해</p>
+    <p class="key">서비스 장애를 사전 방지, 고객의 이탈률을 줄입니다.</p>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap">
+    <h2>운영의 중요성</h2>
+    <p class="lead">운영 및 서비스 장애는 곧바로 고객 이탈로 이어집니다.<br>디지털 오류를 겪으면 고객의 <em>최대 75%</em>가 거래를 중단할 수 있다는 조사가 있어,<br>출시 전에 실 서비스와 같은 환경에서 장애 징후를 확인하는 것이 중요합니다.</p>
+    <div class="stats">
+      <div class="stat"><b>최대 75%</b><span>디지털 오류를 겪으면 구매 · 거래를 중단할 수 있다는 응답</span></div>
+      <div class="stat"><b>58%</b><span>앱 문제를 겪으면 브랜드를 떠나겠다는 응답</span></div>
+      <div class="stat"><b>123%</b><span>모바일 웹 로딩 1초 → 10초 시 이탈 확률 증가</span></div>
+      <div class="stat"><b>15.4%</b><span>첫 크래시 후 앱을 삭제하는 사용자</span></div>
+    </div>
+    <p class="sources">출처: <a href="https://www.prnewswire.com/news-releases/fullstory-second-annual-us-digital-experience-survey-reveals-consumer-behavior-shifts-due-to-inflation-301570881.html">FullStory 미국 디지털 경험 설문 (2022)</a> · <a href="https://www.amplitude.com/blog/uk-tech-frustration-survey">Amplitude 영국 소비자 설문 (2025)</a> · <a href="https://business.google.com/ca-en/think/marketing-strategies/mobile-page-speed-new-industry-benchmarks/">Think with Google (2018)</a> · <a href="https://www.luciq.ai/blog/mobile-app-churn">Luciq (2026)</a>. 75% · 58%는 설문 응답자의 의향입니다.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>실제 서비스와 유사한 내부 테스트 환경 구축</h2>
+    <p class="lead">실제 서비스처럼 Ubuntu Server 환경에 리버스 프록시를 적용해 웹 · 관리자 · API 서버를 운용하고 테스트합니다.<br>CI/CD를 Jenkins로 표준화했습니다.<br>배포한 서버의 도달 여부 · 응답 시간 · 5xx 오류 · 자원 사용량을 Grafana로 확인해,<br><em>실제 서비스 전에 문제를 발견</em>합니다.</p>
+    <div class="grid" style="margin-top:14px">
+      <div class="card"><span class="tag p">create</span><h3>테스트 서버 생성</h3><p>GitHub 저장소 코드를 기반으로 서버를 생성하고,<br>Jenkins 입력값으로 호스트에 <code>.env</code>를 생성한 뒤,<br>리버스 프록시에 등록합니다.</p></div>
+      <div class="card"><span class="tag">deploy</span><h3>업데이트 · 재배포</h3><p>원격 브랜치의 최신 커밋으로 갱신해 다시 빌드합니다. 기동 실패 시 이전 커밋으로 되돌려 재기동합니다.</p></div>
+      <div class="card"><span class="tag">stop</span><h3>실행 서버 중지</h3><p>리버스 프록시를 해제하고 Compose 프로젝트를 내립니다.<br>이미지 · 작업본 · 데이터는 남겨 다시 배포할 수 있습니다.</p></div>
+      <div class="card"><span class="tag p">remove</span><h3>서버 삭제</h3><p>nginx → 컨테이너 → 작업본 순서로 제거합니다. 데이터와 named volume 삭제는 대상 이름 재입력을 요구하는 선택지로 분리했습니다.</p></div>
+      <div class="card"><span class="tag green">db-migrate</span><h3>DB 마이그레이션</h3><p>실행 중인 API 컨테이너에서 TypeORM <code>migration:run</code> 후 <code>migration:show</code>로 적용 상태를 확인합니다.</p></div>
+      <div class="card"><span class="tag p">db-reset</span><h3>DB 초기화</h3><p>대상 이름을 다시 확인한 뒤 <code>schema:drop</code> → <code>migration:run</code> → <code>migration:show</code>를 실행합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Prometheus · Grafana로 장애 징후 확인</h2>
+    <p class="lead">테스트 서버가 뜨면 server-ctl이 역할별 주소를 Prometheus 수집 대상으로 등록하고, 중지 · 삭제 시 해제합니다. Prometheus는 재시작 없이 대상 파일 변경을 감지하고, 30초마다 수집한 지표를 90일(최대 10GB) 보존합니다.</p>
+    <div class="grid">
+      <div class="card"><span class="tag">수집</span><h3>무엇을 수집하는지</h3><ul><li>node-exporter: 호스트 CPU · 메모리 · 디스크 · 네트워크</li><li>cAdvisor: 컨테이너별 CPU · 메모리 (서버 단위로 묶음)</li><li>blackbox: 역할별 HTTP 도달 여부와 응답 시간</li><li>nginx 로그 exporter: 역할 · 상태 코드 · 경로별 요청 수와 처리 시간</li></ul></div>
+      <div class="card"><span class="tag green">대시보드</span><h3>저장소에서 관리하는 Grafana</h3><ul><li>데이터 소스와 대시보드 JSON을 자동 등록</li><li>테스트 서버를 선택해 이력 비교</li><li>UI 수정은 저장하지 않고 저장소 기준으로 유지</li></ul></div>
+      <div class="card"><span class="tag p">사전 방지</span><h3>출시 전에 보이는 문제</h3><ul><li>5xx · 연결 거부 · 5초 시간 초과는 도달 실패로 표시</li><li>느린 요청 상위 10개의 p95 처리 시간</li><li>배포 후 CPU · 메모리 증가 추이</li></ul></div>
+    </div>
+    <h3 style="margin-top:36px">실행 화면</h3>
+    <img class="shot" src="images/grafana-dashboard.png" alt="테스트 서버 모니터링 Grafana 대시보드" loading="lazy">
+    <p class="cap">테스트 서버 대시보드: 도달 여부 · 응답 시간 · 역할별 분당 요청 · 5xx 오류 · 서버 CPU / 메모리 · 요청별 p95 처리 시간 · 요청별 요약(요청 수 · 평균 · p95 · 5xx 비율). 서버 이름은 가렸습니다.</p>
+    <p class="cap">Prometheus와 exporter는 전용 Docker 네트워크 안에서만 접근하고, 외부에는 Grafana 하나만 LAN · VPN 주소로 공개합니다. 설정은 기동 전에 promtool 등으로 검사해 오류가 있으면 기존 컨테이너를 그대로 유지합니다.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Jenkins · 호스트 에이전트 · nginx 분리</h2>
+    <p class="lead">Jenkins 컨트롤러는 권한과 파이프라인을 관리하고, root 작업은 호스트의 검증된 <code>server-ctl</code> 한 곳으로 제한했습니다. 컨테이너 포트는 loopback에만 게시합니다.</p>
+    <div class="arch">
+      <svg viewBox="0 0 980 510" role="img" aria-label="Jenkins가 호스트 에이전트의 server-ctl을 통해 저장소를 Docker Compose로 실행하고 nginx와 Discord에 연결하며, Prometheus가 지표를 수집해 Grafana로 보여 주는 구성">
+        <defs><marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>
+        <rect class="core" x="20" y="30" width="190" height="86" rx="10"/><text class="b" x="115" y="60" text-anchor="middle">Jenkins 컨트롤러</text><text x="115" y="83" text-anchor="middle">잡 · 권한 · 파라미터</text><text class="sub" x="115" y="103" text-anchor="middle">Docker Compose로 실행</text>
+        <rect class="ext" x="270" y="30" width="190" height="86" rx="10"/><text class="b" x="365" y="60" text-anchor="middle">SSH 호스트 에이전트</text><text x="365" y="83" text-anchor="middle">sudo server-ctl</text><text class="sub" x="365" y="103" text-anchor="middle">입력 검증 · 서버별 잠금</text>
+        <rect class="box" x="520" y="30" width="190" height="86" rx="10"/><text class="b" x="615" y="60" text-anchor="middle">GitHub 저장소</text><text x="615" y="83" text-anchor="middle">clone · fetch · reset</text><text class="sub" x="615" y="103" text-anchor="middle">허용 소유자만</text>
+        <rect class="ci" x="770" y="30" width="190" height="86" rx="10"/><text class="b" x="865" y="60" text-anchor="middle">Discord</text><text x="865" y="83" text-anchor="middle">성공 · 실패 알림</text><text class="sub" x="865" y="103" text-anchor="middle">원인 · 단계 · 해결 방법</text>
+        <path class="ln" d="M210 73H268" marker-end="url(#a0)"/><path class="ln" d="M460 73H518" marker-end="url(#a0)"/><path class="ln dash" d="M115 116V138H740V73H768" marker-end="url(#a0)"/>
+        <rect class="zone" x="20" y="166" width="940" height="320" rx="14"/><text class="b" x="490" y="193" text-anchor="middle">내부망 테스트 실행 영역</text>
+        <rect class="box" x="50" y="220" width="190" height="92" rx="10"/><text class="b" x="145" y="250" text-anchor="middle">server-ctl</text><text x="145" y="273" text-anchor="middle">Compose 검사 · override</text><text class="sub" x="145" y="295" text-anchor="middle">host network 거부</text>
+        <rect class="ci" x="290" y="220" width="190" height="92" rx="10"/><text class="b" x="385" y="250" text-anchor="middle">Docker Compose</text><text x="385" y="273" text-anchor="middle">build · up · down</text><text class="sub" x="385" y="295" text-anchor="middle">127.0.0.1에만 게시</text>
+        <rect class="ext" x="530" y="220" width="190" height="92" rx="10"/><text class="b" x="625" y="250" text-anchor="middle">nginx</text><text x="625" y="273" text-anchor="middle">LAN · VPN 프록시</text><text class="sub" x="625" y="295" text-anchor="middle">WebSocket 전달 · 설정 검사</text>
+        <rect class="box" x="770" y="220" width="160" height="92" rx="10"/><text class="b" x="850" y="250" text-anchor="middle">사용자</text><text x="850" y="273" text-anchor="middle">웹 · 관리자 · API</text><text class="sub" x="850" y="295" text-anchor="middle">내부망에서만 접근</text>
+        <path class="ln" d="M240 266H288" marker-end="url(#a0)"/><path class="ln" d="M480 266H528" marker-end="url(#a0)"/><path class="ln" d="M720 266H768" marker-end="url(#a0)"/>
+        <path class="ln dash" d="M365 116V145H145V218" marker-end="url(#a0)"/>
+        <rect class="core" x="530" y="380" width="190" height="80" rx="10"/><text class="b" x="625" y="408" text-anchor="middle">Prometheus</text><text x="625" y="430" text-anchor="middle">exporter · blackbox</text><text class="sub" x="625" y="448" text-anchor="middle">30초마다 수집</text>
+        <rect class="ci" x="770" y="380" width="160" height="80" rx="10"/><text class="b" x="850" y="408" text-anchor="middle">Grafana</text><text x="850" y="430" text-anchor="middle">대시보드</text><text class="sub" x="850" y="448" text-anchor="middle">내부망에서만 조회</text>
+        <path class="ln dash" d="M625 312V378" marker-end="url(#a0)"/><path class="ln dash" d="M385 312V400H528" marker-end="url(#a0)"/><path class="ln dash" d="M145 312V440H528" marker-end="url(#a0)"/><path class="ln" d="M720 420H768" marker-end="url(#a0)"/>
+        <text class="sub" x="635" y="350">요청 로그 · 응답 검사</text><text class="sub" x="400" y="392">컨테이너 자원</text><text class="sub" x="160" y="432">모니터링 대상 등록 · 해제</text>
+      </svg>
+    </div>
+    <p class="cap">OS 설치, WireGuard · SSH 외부 접속, SVN 구축은 같은 프로젝트의 서버 기반이며, 자세한 구축 과정은 <a data-project-link href="../internal-linux-server/">내부망 Linux 서버 구축</a> 페이지에서 설명합니다.</p>
+  </div>
+</section>
+
+<section class="page-break">
+  <div class="wrap">
+    <h2>생성부터 배포 · 복구까지</h2>
+    <p class="lead">입력을 먼저 검증하고, 다른 테스트 서버를 내린 뒤 대상만 올립니다. 성공 후에는 접속 정보와 용량을 남기고, 실패하면 작업 종류에 맞춰 정리하거나 롤백합니다.</p>
+    <div class="arch">
+      <svg viewBox="0 0 980 330" role="img" aria-label="입력 검증부터 Git 갱신, Docker Compose 실행, nginx 등록, Discord 알림과 실패 롤백까지의 파이프라인 흐름">
+        <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker><marker id="a1r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ahr" d="M0 0L10 5L0 10z"/></marker><marker id="a1g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ahg" d="M0 0L10 5L0 10z"/></marker></defs>
+        <rect class="core" x="10" y="30" width="140" height="64" rx="8"/><text class="b" x="80" y="56" text-anchor="middle">권한 · 입력 검증</text><text class="sub" x="80" y="78" text-anchor="middle">이름 · URL · 용량</text>
+        <rect class="ext" x="175" y="30" width="140" height="64" rx="8"/><text class="b" x="245" y="56" text-anchor="middle">Git 작업</text><text class="sub" x="245" y="78" text-anchor="middle">clone / update</text>
+        <rect class="box" x="340" y="30" width="140" height="64" rx="8"/><text class="b" x="410" y="56" text-anchor="middle">환경 구성</text><text class="sub" x="410" y="78" text-anchor="middle">.env · override</text>
+        <rect class="box" x="505" y="30" width="140" height="64" rx="8"/><text class="b" x="575" y="56" text-anchor="middle">다른 서버 중지</text><text class="sub" x="575" y="78" text-anchor="middle">고정 포트 확보</text>
+        <rect class="ci" x="670" y="30" width="140" height="64" rx="8"/><text class="b" x="740" y="56" text-anchor="middle">Compose 실행</text><text class="sub" x="740" y="78" text-anchor="middle">build · up</text>
+        <rect class="ext" x="835" y="30" width="135" height="64" rx="8"/><text class="b" x="902" y="56" text-anchor="middle">nginx 등록</text><text class="sub" x="902" y="78" text-anchor="middle">test · reload</text>
+        <path class="ln" d="M150 62H173" marker-end="url(#a1)"/><path class="ln" d="M315 62H338" marker-end="url(#a1)"/><path class="ln" d="M480 62H503" marker-end="url(#a1)"/><path class="ln" d="M645 62H668" marker-end="url(#a1)"/><path class="ln" d="M810 62H833" marker-end="url(#a1)"/>
+        <rect class="core" x="85" y="170" width="240" height="72" rx="9"/><text class="b" x="205" y="198" text-anchor="middle">생성 실패</text><text x="205" y="220" text-anchor="middle">nginx → 컨테이너 → 작업본 정리</text>
+        <rect class="core" x="370" y="170" width="240" height="72" rx="9"/><text class="b" x="490" y="198" text-anchor="middle">배포 실패</text><text x="490" y="220" text-anchor="middle">이전 커밋으로 재기동</text>
+        <rect class="ci" x="655" y="170" width="240" height="72" rx="9"/><text class="b" x="775" y="198" text-anchor="middle">항상 마지막</text><text x="775" y="220" text-anchor="middle">Discord 결과 · 복구 안내</text>
+        <path class="ln red dash" d="M740 96V132H205V168" marker-end="url(#a1r)"/><path class="ln red dash" d="M740 96V132H490V168" marker-end="url(#a1r)"/><path class="ln grn dash" d="M902 96V132H775V168" marker-end="url(#a1g)"/><path class="ln grn dash" d="M205 244V266H775V244" marker-end="url(#a1g)"/><path class="ln grn dash" d="M490 244V266H775V244" marker-end="url(#a1g)"/>
+        <text class="sub" x="490" y="285" text-anchor="middle">서버별 lock으로 create · deploy · remove 직렬화 / 파괴 작업은 대상 이름 재확인</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>커밋으로 Jenkins 잡 동기화</h2>
+    <p class="lead"><code>pipelines/&lt;group&gt;/&lt;job&gt;/Jenkinsfile</code> 구조를 seed 잡이 읽어 파이프라인과 상단 탭을 자동 생성합니다. Jenkins 화면에서 잡을 손으로 복제하지 않아도 저장소 상태와 운영 화면이 맞춰집니다.</p>
+    <div class="grid two">
+      <div class="card"><span class="tag">SVN → seed</span><h3>변경 즉시 반영</h3><p>SVN <code>post-commit</code> 훅이 토큰으로 seed를 호출합니다. seed는 Jenkinsfile을 스캔하고 Job DSL로 잡과 탭을 생성하며, 저장소에서 사라진 정의는 Jenkins에서도 삭제합니다.</p></div>
+      <div class="card"><span class="tag">parameters</span><h3>기존 설정 보존</h3><p>Job DSL 재생성 때 기존 <code>properties</code>와 <code>actions</code>를 보존합니다. 선언형 파라미터가 바뀐 잡만 갱신 실행하고 실제 작업 없이 <code>NOT_BUILT</code>로 끝냅니다.</p></div>
+      <div class="card"><span class="tag">shared library</span><h3>공통 운영 로직</h3><p><code>serverLocal</code>은 서버 목록 · 드롭다운 · 용량 · 접속 주소를, <code>notify</code>는 결과와 실패 정보를 담당합니다. 파이프라인은 작업 순서와 잡별 해결 안내에 집중합니다.</p></div>
+      <div class="card"><span class="tag">bootstrap</span><h3>재현 가능한 Jenkins</h3><p><code>setup-host.sh</code>와 <code>init.groovy.d</code>가 플러그인, 자격증명, SSH 노드, 전역 라이브러리, 권한, seed 잡을 멱등하게 구성합니다. 비밀값은 임시 파일에서 등록한 뒤 삭제합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">서버 구축 및 운영 환경 · 실제 IP · 계정명 · 저장소 식별자 · 자격증명은 페이지에서 제외했습니다.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BAS · AI 업무 자동화 솔루션</title>
+<meta name="description" content="말과 글로 시키면 AI가 회사 업무 문서를 만들어 주는 업무 자동화 솔루션">
+<style>
+  :root {
+    --bg: #f7f8fa; --surface: #ffffff; --surface-2: #eef1f5; --text: #16191d; --text-2: #565d66; --border: #dde2e8;
+    --primary: #1e4f8a; --primary-soft: #e5edf7; --accent: #0f766e; --accent-soft: #e0f2ef; --ok: #18794e; --ok-soft: #e6f4ec;
+    --radius: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121417; --surface: #1a1d21; --surface-2: #23272d; --text: #e8eaed; --text-2: #a3aab3; --border: #323840;
+      --primary: #8db8f0; --primary-soft: #1b2a3d; --accent: #5fd3c4; --accent-soft: #12302d; --ok: #5fd39a; --ok-soft: #173426;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; word-break: keep-all; overflow-wrap: anywhere; background: var(--bg); color: var(--text); font: 16px/1.7 "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Hiragino Sans", "Yu Gothic", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  a { color: var(--accent); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  section { padding: 60px 0; border-top: 1px solid var(--border); }
+  h2 { font-size: 30px; margin: 0 0 8px; letter-spacing: -.02em; }
+  h3 { font-size: 20px; margin: 0 0 10px; letter-spacing: -.01em; }
+  .lead { color: var(--text-2); margin: 0 0 32px; max-width: 900px; font-size: 17px; }
+  code { background: var(--surface-2); padding: 1px 6px; border-radius: 5px; font-size: .88em; }
+
+  header.hero { padding: 64px 0 40px; }
+  .brand { font-size: 22px; font-weight: 900; letter-spacing: -.5px; }
+  .brand span { color: var(--primary); }
+  .hero h1 { font-size: clamp(30px, 4.6vw, 46px); line-height: 1.25; margin: 18px 0 16px; letter-spacing: -.03em; }
+  .hero h1 em { font-style: normal; color: var(--primary); }
+  .hero .intro { color: var(--text-2); font-size: 18px; max-width: 800px; margin: 0 0 24px; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+  .stat b { display: block; font-size: 26px; color: var(--primary); line-height: 1.25; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--text-2); font-size: 14px; }
+  .sources { margin: 14px 0 0; color: var(--text-2); font-size: 13px; }
+  .sources a { color: inherit; }
+
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(3, 1fr); }
+  .grid.two { grid-template-columns: repeat(2, 1fr); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+  .card h3 { font-size: 18px; margin: 8px 0 6px; }
+  .card p { color: var(--text-2); margin: 0; font-size: 15px; }
+  .card ul { color: var(--text-2); margin: 0; padding-left: 18px; font-size: 15px; }
+  .card li { margin: 4px 0; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); }
+  .tag.p { background: var(--primary-soft); color: var(--primary); }
+  .tag.green { background: var(--ok-soft); color: var(--ok); }
+
+  .arch { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; }
+  .arch svg { display: block; width: 100%; min-width: 720px; height: auto; }
+  .arch text { fill: var(--text); font: 13px "Malgun Gothic", "Hiragino Sans", "Yu Gothic", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  .arch .b { font-weight: 700; }
+  .arch .sub { fill: var(--text-2); font-size: 11px; }
+  .arch .box { fill: var(--surface-2); stroke: var(--border); }
+  .arch .core { fill: var(--primary-soft); stroke: var(--primary); }
+  .arch .ext { fill: var(--accent-soft); stroke: var(--accent); }
+  .arch .ci { fill: var(--ok-soft); stroke: var(--ok); }
+  .arch .zone { fill: none; stroke: var(--text-2); stroke-dasharray: 6 4; }
+  .arch .ln { stroke: var(--text-2); stroke-width: 1.4; fill: none; }
+  .arch .dash { stroke-dasharray: 5 4; }
+  .arch .red { stroke: var(--primary); }
+  .arch .grn { stroke: var(--ok); }
+  .arch .ahg { fill: var(--ok); }
+  .arch .ah { fill: var(--text-2); }
+  .arch .ahr { fill: var(--primary); }
+  .shot { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  .key { margin: -16px 0 0; color: var(--primary); font-size: 18px; font-weight: 700; max-width: 800px; }
+  .lead em { font-style: normal; font-weight: 700; color: var(--primary); }
+  .cap { font-size: 13px; color: var(--text-2); margin: 8px 0 0; }
+  .arch + .cap + h3 { margin-top: 36px; }
+
+
+  .shots { display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); align-items: start; }
+  .shots figure { margin: 0; }
+  .shots .phone { display: grid; grid-template-columns: 1fr 2.4fr; gap: 14px; align-items: start; }
+  @media screen and (max-width: 860px) { .shots, .shots .phone { grid-template-columns: 1fr; } }
+  .back { padding: 14px 0 0; font-size: 14px; } .back .wrap { display: flex; justify-content: space-between; gap: 12px; } .back a { text-decoration: none; font-weight: 700; }
+  footer { padding: 40px 0 60px; border-top: 1px solid var(--border); color: var(--text-2); font-size: 14px; }
+
+  @media screen and (max-width: 860px) {
+    .grid, .grid.two { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    section { padding: 40px 0; }
+  }
+
+  @page { size: A4; margin: 11mm; }
+  @media print {
+    :root { --bg: #fff; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 12px; }
+    header.hero { padding: 0 0 12px; }
+    footer, .back { display: none; }
+    .hero h1 { font-size: 28px; margin: 10px 0; }
+    .hero .intro { font-size: 14px; }
+    section { padding: 10px 0; }
+    .cap, .card, .stat, .arch, .lead, .shot, .key { break-inside: avoid; }
+    h2 { font-size: 22px; } h3 { font-size: 15px; }
+    .lead { font-size: 13px; margin-bottom: 14px; }
+    .card { padding: 14px; } .card p, .card ul { font-size: 12px; }
+    .key { font-size: 14px; margin-top: -8px; }
+    h2, h3 { break-after: avoid; }
+    .arch { overflow: visible; padding: 8px; } .arch svg { min-width: 0; }
+    .arch + .cap + h3 { margin-top: 14px; }
+    .page-break { break-before: page; }
+  }
+
+  /* 언어 전환: 홈(app/globals.css)과 같은 드롭다운 */
+  .lang-switch { position: relative; color: var(--text-2); }
+  .lang-switch summary { padding: 0 6px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .lang-switch > div { position: absolute; top: calc(100% + 8px); right: 0; z-index: 10; display: grid; min-width: 96px; padding: 6px;
+    border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: 0 8px 24px rgb(0 0 0 / .12); }
+  .back .lang-switch a { padding: 4px 8px; color: var(--text-2); text-decoration: none; font-weight: 400; white-space: nowrap; }
+  .back .lang-switch a[aria-current] { color: var(--text); font-weight: 700; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  :lang(ja), :lang(zh) { word-break: normal; }
+  /* ja/zh: 맑은 고딕보다 해당 언어 글꼴을 먼저 (한자·가나 자형·굵기 섞임 방지) */
+  body:lang(ja), :lang(ja) .arch text { font-family: "Pretendard", "Hiragino Sans", "Yu Gothic", Meiryo, system-ui, sans-serif; }
+  body:lang(zh), :lang(zh) .arch text { font-family: "Pretendard", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  :lang(ja) code { font-family: "Cascadia Code", Consolas, "Yu Gothic", Meiryo, monospace; }
+  :lang(zh) code { font-family: "Cascadia Code", Consolas, "Microsoft YaHei", monospace; }
+</style>
+</head>
+<body>
+<nav class="back"><div class="wrap"><a href="../../">← 포트폴리오</a><details class="lang-switch"><summary><span class="sr-only">언어 선택: </span>한국어</summary><div><a hreflang="ko" lang="ko" href="./" aria-current="page">한국어</a><a hreflang="en" lang="en" href="en/">English</a><a hreflang="ja" lang="ja" href="ja/">日本語</a><a hreflang="zh" lang="zh-CN" href="zh/">中文</a></div></details></div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="brand">business-<span>AX</span></div>
+    <h1>말로 시키는<br><em>AI 업무 자동화 솔루션</em></h1>
+    <p class="intro">직원이 글이나 음성으로 업무를 요청하면, AI가 회사마다 미리 정한 규칙에 맞는 업무 스크립트를 실행해 견적서 · 발주 요청서 · 도면 같은 업무 문서를 만들어 줍니다.</p>
+    <p class="key">반복되는 문서 업무를 줄이고, 회사의 업무 방식은 그대로 유지합니다.</p>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap">
+    <h2>무엇을 자동화하나</h2>
+    <p class="lead">AI가 임의의 코드를 만들어 실행하지 않습니다. <em>회사별로 미리 작성한 업무 스크립트와 확장 도구만</em> 고르고, 입력값은 서버가 실행 전에 스키마로 다시 검증합니다.</p>
+    <div class="stats">
+      <div class="stat"><b>텍스트 · 음성</b><span>음성으로 요청하면 음성으로, 글로 요청하면 글로 답합니다</span></div>
+      <div class="stat"><b>1기업 1스택</b><span>회사마다 서버 · DB · 저장소를 분리해 데이터가 섞이지 않습니다</span></div>
+      <div class="stat"><b>5단계 권한</b><span>운영사 · 대표 · 관리자 · 매니저 · 직원과 게시판별 읽기 · 쓰기 권한</span></div>
+      <div class="stat"><b>무중단 반영</b><span>설정은 핫 리로드, 코드는 같은 서버 안 blue/green으로 반영합니다</span></div>
+    </div>
+    <div class="grid" style="margin-top:14px">
+      <div class="card"><span class="tag p">문서 작성</span><h3>견적서 · 발주 요청서</h3><p>"한빛건설에 철근 2톤 견적서 만들어 줘"처럼 말하면 거래처 · 품목 · 단가 기준정보를 찾아 회사 양식으로 문서를 만듭니다.</p></div>
+      <div class="card"><span class="tag">CAD</span><h3>도면 수정 · 새 도면 그리기</h3><p>DXF 도면을 올려 치수 · 문자를 고치거나, 말한 치수로 새 도면을 그립니다.</p></div>
+      <div class="card"><span class="tag green">사진 인식</span><h3>지출결의서 · 거래명세서</h3><p>영수증 · 명세서 사진을 AI가 읽어 지출결의서와 거래명세서를 작성합니다.</p></div>
+      <div class="card"><span class="tag">양식 채우기</span><h3>타 업체 양식 작성</h3><p>거래처가 보낸 XLSX · DOCX · HWPX · 입력 칸이 있는 PDF 양식의 빈칸을 채웁니다.</p></div>
+      <div class="card"><span class="tag p">메일</span><h3>메일 초안 작성</h3><p>직원의 Google 계정으로 메일 초안만 만들고, 직원이 내용을 확인한 뒤 보내기를 눌러야 발송합니다.</p></div>
+      <div class="card"><span class="tag green">지난 업무 찾기</span><h3>대화 · 문서함 검색</h3><p>"저번에 만든 견적서 얼마였지?"처럼 물으면 본인의 지난 대화와 문서함을 찾아 날짜 · 출처와 함께 답합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>요청 처리 흐름</h2>
+    <p class="lead">AI는 Claude API의 Tool Runner로 업무 스크립트마다 하나씩 만든 도구 중 하나를 고릅니다. 정보가 부족하거나 후보가 여럿이면 <em>추측하지 않고 선택지를 보여 주며 되묻습니다.</em></p>
+    <div class="arch">
+      <svg viewBox="0 0 980 300" role="img" aria-label="직원 웹앱에서 보낸 텍스트 또는 음성 요청이 Nest 백엔드와 STT를 거쳐 AI 도구 선택, Python 업무 스크립트 실행, 문서함 저장을 지나 텍스트와 브라우저 음성으로 돌아오는 흐름">
+        <defs><marker id="b0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>
+        <rect class="box" x="10" y="40" width="140" height="80" rx="10"/><text class="b" x="80" y="70" text-anchor="middle">직원 웹앱</text><text x="80" y="92" text-anchor="middle">텍스트 · 음성</text><text class="sub" x="80" y="110" text-anchor="middle">PWA · 모바일</text>
+        <rect class="core" x="190" y="40" width="150" height="80" rx="10"/><text class="b" x="265" y="70" text-anchor="middle">Nest 백엔드</text><text x="265" y="92" text-anchor="middle">권한 · 한도 확인</text><text class="sub" x="265" y="110" text-anchor="middle">SSE로 진행 상태 전송</text>
+        <rect class="ext" x="380" y="40" width="140" height="80" rx="10"/><text class="b" x="450" y="70" text-anchor="middle">STT</text><text x="450" y="92" text-anchor="middle">음성 → 글자</text><text class="sub" x="450" y="110" text-anchor="middle">녹음은 변환 즉시 삭제</text>
+        <rect class="core" x="560" y="40" width="190" height="80" rx="10"/><text class="b" x="655" y="70" text-anchor="middle">AI 에이전트</text><text x="655" y="92" text-anchor="middle">Claude Tool Runner</text><text class="sub" x="655" y="110" text-anchor="middle">회사 규칙 · 최근 6턴 문맥</text>
+        <rect class="ci" x="790" y="40" width="180" height="80" rx="10"/><text class="b" x="880" y="70" text-anchor="middle">업무 스크립트</text><text x="880" y="92" text-anchor="middle">Python · 회사 확장 도구</text><text class="sub" x="880" y="110" text-anchor="middle">입력 스키마 재검증</text>
+        <path class="ln" d="M150 80H188" marker-end="url(#b0)"/><path class="ln dash" d="M340 80H378" marker-end="url(#b0)"/><path class="ln" d="M520 80H558" marker-end="url(#b0)"/><path class="ln" d="M750 80H788" marker-end="url(#b0)"/>
+        <rect class="box" x="560" y="180" width="190" height="80" rx="10"/><text class="b" x="655" y="210" text-anchor="middle">되묻기</text><text x="655" y="232" text-anchor="middle">후보 선택 칩</text><text class="sub" x="655" y="250" text-anchor="middle">추측하지 않음</text>
+        <rect class="ci" x="790" y="180" width="180" height="80" rx="10"/><text class="b" x="880" y="210" text-anchor="middle">문서함 · 업무관리</text><text x="880" y="232" text-anchor="middle">결과 파일 · 게시판</text><text class="sub" x="880" y="250" text-anchor="middle">읽기 권한자에게 알림</text>
+        <rect class="box" x="10" y="180" width="330" height="80" rx="10"/><text class="b" x="175" y="210" text-anchor="middle">응답</text><text x="175" y="232" text-anchor="middle">말풍선 + 결과 카드 · 내려받기</text><text class="sub" x="175" y="250" text-anchor="middle">음성 답은 브라우저 Web Speech API로 읽기</text>
+        <path class="ln dash" d="M655 120V178" marker-end="url(#b0)"/><path class="ln" d="M880 120V178" marker-end="url(#b0)"/><path class="ln" d="M790 220H752"/><path class="ln dash" d="M560 220H342" marker-end="url(#b0)"/>
+      </svg>
+    </div>
+    <p class="cap">음성 답은 서버에서 합성하지 않고 읽을 문장만 보내 브라우저가 읽으므로, 서버 음성 비용과 음성 파일 보관이 없습니다.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>실행 화면</h2>
+    <p class="lead">직원 웹앱(PC · 모바일)과 기업 관리자 웹은 Next.js 앱 2개로 나누고, 공용 화면 · API 클라이언트 · 테마는 하나의 패키지에서 함께 씁니다.</p>
+    <div class="shots">
+      <figure><img class="shot" src="images/web-home.png" alt="직원 웹앱 업무 요청 화면" loading="lazy"><figcaption class="cap">직원 웹앱 · 업무 요청: 대화내역, 예시 문장, 파일 첨부와 음성 입력</figcaption></figure>
+      <figure><img class="shot" src="images/mail-preview.png" alt="메일 초안 확인 화면" loading="lazy"><figcaption class="cap">메일 초안 확인: 직원이 받는 사람 · 제목 · 첨부를 확인하고 보내기를 눌러야 발송</figcaption></figure>
+      <figure><img class="shot" src="images/board-admin.png" alt="게시판관리 기준정보 화면 (다크 모드)" loading="lazy"><figcaption class="cap">게시판관리 · 기준정보: 제품 · 자재 · 거래처 · 현장과 단가 이력 (다크 모드)</figcaption></figure>
+      <figure><img class="shot" src="images/admin-dashboard.png" alt="기업 관리자 대시보드" loading="lazy"><figcaption class="cap">기업 관리자 · 대시보드: 플랫폼 사용률, 날짜별 업무 처리 현황, 운영사 열람 횟수</figcaption></figure>
+      <figure><img class="shot" src="images/admin-permissions.png" alt="게시판별 권한 설정 화면" loading="lazy"><figcaption class="cap">권한 설정: 등급마다 게시판별 권한 없음 · 읽기만 · 읽기 · 쓰기</figcaption></figure>
+      <figure><img class="shot" src="images/web-result-mobile.png" alt="모바일 업무 결과 화면" loading="lazy" style="max-width:300px"><figcaption class="cap">모바일 · 결과 카드: 만든 문서 요약과 내려받기, 답변 평가</figcaption></figure>
+    </div>
+    <p class="cap">화면의 회사 · 사람 · 금액은 모두 시연용 가상 데이터입니다.</p>
+  </div>
+</section>
+
+<section class="page-break">
+  <div class="wrap">
+    <h2>1기업 1스택 + 오케스트레이션</h2>
+    <p class="lead">고객사마다 서버 · DB · 파일 저장소를 따로 두고, 운영사는 오케스트레이션 하나로 모든 기업을 등록 · 모니터링 · 과금합니다. 기업 스택과 오케스트레이션은 <em>하나의 OpenAPI 계약</em>으로 통신합니다.</p>
+    <div class="arch">
+      <svg viewBox="0 0 980 380" role="img" aria-label="오케스트레이션 스택이 여러 기업 스택을 내부 API로 관리하고, 각 기업 스택은 EC2의 Nginx, 직원 웹앱, 관리자 웹, Nest 백엔드와 RDS, S3로 구성된 구조">
+        <defs><marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>
+        <rect class="core" x="20" y="30" width="260" height="320" rx="14"/><text class="b" x="150" y="60" text-anchor="middle">오케스트레이션 (1개)</text>
+        <rect class="box" x="40" y="80" width="220" height="56" rx="8"/><text class="b" x="150" y="104" text-anchor="middle">관리 화면 · Next.js</text><text class="sub" x="150" y="124" text-anchor="middle">최고권한 · 운영사 직원</text>
+        <rect class="box" x="40" y="148" width="220" height="56" rx="8"/><text class="b" x="150" y="172" text-anchor="middle">백엔드 · Spring Boot</text><text class="sub" x="150" y="192" text-anchor="middle">기업 등록 · API Key · 과금</text>
+        <rect class="box" x="40" y="216" width="220" height="56" rx="8"/><text class="b" x="150" y="240" text-anchor="middle">Prometheus · Grafana · Loki</text><text class="sub" x="150" y="260" text-anchor="middle">전 기업 모니터링 · 에러 로그</text>
+        <rect class="box" x="40" y="284" width="220" height="50" rx="8"/><text class="b" x="150" y="306" text-anchor="middle">답변 평가 · 학습 제안</text><text class="sub" x="150" y="324" text-anchor="middle">승인 후 평가 게이트</text>
+        <rect class="zone" x="340" y="30" width="620" height="320" rx="14"/><text class="b" x="650" y="60" text-anchor="middle">기업 스택 (고객사마다 1개)</text>
+        <rect class="ext" x="370" y="80" width="560" height="44" rx="8"/><text class="b" x="650" y="107" text-anchor="middle">Nginx + certbot · HTTPS 리버스 프록시 (인증서 자동 갱신)</text>
+        <rect class="ci" x="370" y="146" width="170" height="80" rx="8"/><text class="b" x="455" y="174" text-anchor="middle">직원 웹앱</text><text x="455" y="196" text-anchor="middle">Next.js · PWA</text><text class="sub" x="455" y="214" text-anchor="middle">업무 요청 · 문서함</text>
+        <rect class="ci" x="565" y="146" width="170" height="80" rx="8"/><text class="b" x="650" y="174" text-anchor="middle">기업 관리자 웹</text><text x="650" y="196" text-anchor="middle">Next.js</text><text class="sub" x="650" y="214" text-anchor="middle">직원 · 권한 · 로그</text>
+        <rect class="core" x="760" y="146" width="170" height="80" rx="8"/><text class="b" x="845" y="174" text-anchor="middle">Nest 백엔드</text><text x="845" y="196" text-anchor="middle">API + 백그라운드</text><text class="sub" x="845" y="214" text-anchor="middle">AI · 스크립트 실행</text>
+        <rect class="box" x="370" y="262" width="170" height="64" rx="8"/><text class="b" x="455" y="290" text-anchor="middle">회사 폴더</text><text class="sub" x="455" y="310" text-anchor="middle">규칙 · 스크립트 · 확장</text>
+        <rect class="box" x="565" y="262" width="170" height="64" rx="8"/><text class="b" x="650" y="290" text-anchor="middle">RDS</text><text class="sub" x="650" y="310" text-anchor="middle">PostgreSQL · TypeORM</text>
+        <rect class="box" x="760" y="262" width="170" height="64" rx="8"/><text class="b" x="845" y="290" text-anchor="middle">S3</text><text class="sub" x="845" y="310" text-anchor="middle">문서 · 첨부 파일</text>
+        <path class="ln" d="M455 124V144" marker-end="url(#b1)"/><path class="ln" d="M650 124V144" marker-end="url(#b1)"/><path class="ln" d="M845 124V144" marker-end="url(#b1)"/>
+        <path class="ln" d="M845 226V260" marker-end="url(#b1)"/><path class="ln" d="M800 226V244H650V260" marker-end="url(#b1)"/><path class="ln dash" d="M780 226V250H540V262"/>
+        <path class="ln dash" d="M260 176H320V102H368" marker-end="url(#b1)"/><text class="sub" x="310" y="92" text-anchor="middle">내부 API</text>
+      </svg>
+    </div>
+    <div class="grid" style="margin-top:14px">
+      <div class="card"><span class="tag">IaC</span><h3>AWS CDK</h3><p>기업 1곳 = <code>TenantStack</code> 1개. 기업별 태그로 비용을 나눠 집계합니다.</p></div>
+      <div class="card"><span class="tag p">과금</span><h3>사용료 한도</h3><p>기업별 하루 사용료를 매일 새벽 집계하고, 이번 달 한도를 넘으면 요청을 막습니다. 관리자는 사용률 %만 봅니다.</p></div>
+      <div class="card"><span class="tag green">애드온</span><h3>기업별 기능 켜기</h3><p>음성 요청(STT) · 음성 응답(TTS)은 애드온으로 켜고 끄며, 꺼진 기능은 화면에서 숨기고 API에서 막습니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>회사별 업무를 코드로 확장</h2>
+    <p class="lead">제품은 모든 회사에 같은 틀과 SDK만 두고, 업무관리 게시판 · 업무 스크립트 · 회사 전용 화면은 <em>회사 폴더</em>에 둡니다. 고객사별 브랜치 없이 하나의 제품으로 여러 회사를 운영합니다.</p>
+    <div class="grid">
+      <div class="card"><span class="tag p">BAS</span><h3>제품 저장소</h3><ul><li>직원 웹앱 · 관리자 웹 · Nest 백엔드</li><li>업무 스크립트 Python SDK</li><li>회사 확장 SDK (화면 · API · 표 · AI 도구 끼움 자리)</li><li>공통 AI 규칙</li></ul></div>
+      <div class="card"><span class="tag">BAS-Module</span><h3>회사별 폴더</h3><ul><li>업무 게시판 선언 · 권한 · 문서 분류</li><li>회사 규칙 · 용어 · 업무 가이드</li><li>문서 양식 · 업무 스크립트 · 평가</li><li>회사 전용 화면 · API · 표</li></ul></div>
+      <div class="card"><span class="tag green">BAS-Orchestration</span><h3>운영 저장소</h3><ul><li>Spring Boot 백엔드 · Next.js 화면</li><li>OpenAPI에서 Java 클라이언트 생성</li><li>배포 · 모니터링 구성</li></ul></div>
+    </div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="card"><span class="tag">설정 반영</span><h3>서버를 내리지 않는 배포</h3><p>DB 설정값은 즉시, 회사 설정 파일은 검증 후 핫 리로드, 코드와 스크립트는 같은 서버 안 blue/green으로 반영합니다.</p></div>
+      <div class="card"><span class="tag p">AI 학습</span><h3>재학습 없는 개선</h3><p>모델을 재학습하지 않습니다. 되묻기 · 다시 요청 · 처리 못 한 요청에서 주 1회 용어 · 별칭 · 규칙 제안을 만들고, 운영사가 승인한 것만 평가 게이트를 거쳐 반영합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>권한 · 데이터 보호</h2>
+    <p class="lead">고객사의 업무 데이터와 직원 대화를 다루므로, 권한과 보관 기간을 설계 단계부터 계약서 조항과 함께 정했습니다.</p>
+    <div class="grid">
+      <div class="card"><span class="tag p">RBAC</span><h3>등급 × 게시판 권한</h3><ul><li>운영사 &gt; 대표 &gt; 관리자 &gt; 매니저 &gt; 직원</li><li>읽기 권한이 없는 게시판의 업무는 AI에게 시킬 수 없고 결과 파일도 숨김</li><li>관리자 메뉴 권한은 대표가 메뉴마다 지정</li></ul></div>
+      <div class="card"><span class="tag">보관</span><h3>데이터 보관 기간</h3><ul><li>대화 기록 90일, 업무 문서 1년 (기업별 설정)</li><li>음성 녹음은 변환 직후 삭제</li><li>요청 첨부 원본은 올린 사람만 내려받기</li></ul></div>
+      <div class="card"><span class="tag green">감사</span><h3>열람 기록</h3><ul><li>대화 열람 · 직원 관리 · 권한 변경은 감사 기록으로 1년 보관</li><li>직원 고지 · 동의 없이는 서비스 사용 불가</li><li>업무 스크립트는 업무 테이블만 쓰는 DB 계정으로 실행</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>AI와 함께하는 개발 프로세스</h2>
+    <p class="lead">기술 검토부터 커밋까지 단계를 나누고, Claude Code와 Codex가 같은 규칙 파일과 스킬을 공유하며 서로의 결과를 교차 검증합니다.</p>
+    <div class="grid">
+      <div class="card"><span class="tag">문서 우선</span><h3>검토 → 디자인 → 계획 → 스키마</h3><p>기술 검토 · 화면 디자인 · 구현 계획 · DB 스키마를 문서로 먼저 쓰고, 확인을 받은 뒤 코드를 작성합니다.</p></div>
+      <div class="card"><span class="tag p">병렬 구현</span><h3>서브컨텍스트 단위 구현</h3><p>의존성이 없는 작업 단위는 격리된 작업 공간에서 서브에이전트가 병렬로 구현 · 테스트합니다.</p></div>
+      <div class="card"><span class="tag green">교차 리뷰</span><h3>테스트 · 교차 검증 후 커밋</h3><p>기능마다 테스트 케이스를 쓰고, 다른 AI의 교차 리뷰를 통과해야 커밋합니다. 비밀값은 훅으로 커밋 전에 차단합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">BAS · AI 업무 자동화 솔루션 · 화면의 회사 · 인명 · 금액은 가상 데이터이며, 실제 서버 주소 · 저장소 식별자 · 자격증명은 페이지에서 제외했습니다.</div>
+</footer>
+</body>
+</html>

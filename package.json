@@ -1,0 +1,25 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "export": "node scripts/export.mjs",
+    "i18n": "node scripts/i18n.mjs",
+    "prebuild": "node scripts/i18n.mjs build",
+    "preexport": "node scripts/i18n.mjs build",
+    "predev": "node scripts/i18n.mjs build"
+  },
+  "dependencies": {
+    "next": "^16.4.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "pdfjs-dist": "^6.4.299",
+    "playwright-core": "^1.64.1",
+    "typescript": "^7.0.2"
+  }
+}

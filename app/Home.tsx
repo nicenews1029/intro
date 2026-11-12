@@ -57,8 +57,8 @@ export default function Home({ lang }: { lang: Lang }) {
       <nav className="nav">
         <a href="#top" className="brand">iam<span>.</span></a>
         <div>
-          <a href="#projects">{tr('nav.projects')}</a>
           <a href="#skills">{tr('nav.skills')}</a>
+          <a href="#projects">{tr('nav.projects')}</a>
           <details className="lang-switch">
             <summary><span className="sr-only">{tr('nav.lang')}: </span>{langLabel[lang]}</summary>
             <div>
@@ -100,6 +100,23 @@ export default function Home({ lang }: { lang: Lang }) {
           </div>
         </header>
 
+        <section id="skills">
+          <p className="eyebrow">Skills</p>
+          <h2>{tr('nav.skills')}</h2>
+          <ul className="skill-groups">
+            {skillGroups.map((g) => (
+              <li key={g.id} className="glass reveal">
+                <h3>{tr(`skills.group.${g.id}`)}</h3>
+                <ul className="chips small">
+                  {g.items.map((s) => (
+                    <li key={s}>{s}</li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <section id="projects">
           <p className="eyebrow">Projects</p>
           <h2>{tr('nav.projects')}</h2>
@@ -136,23 +153,6 @@ export default function Home({ lang }: { lang: Lang }) {
             ))}
           </ProjectCarousel>
           <p className="projects-note">{tr('projects.note')}</p>
-        </section>
-
-        <section id="skills">
-          <p className="eyebrow">Skills</p>
-          <h2>{tr('nav.skills')}</h2>
-          <ul className="skill-groups">
-            {skillGroups.map((g) => (
-              <li key={g.id} className="glass reveal">
-                <h3>{tr(`skills.group.${g.id}`)}</h3>
-                <ul className="chips small">
-                  {g.items.map((s) => (
-                    <li key={s}>{s}</li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
         </section>
 
       </main>
